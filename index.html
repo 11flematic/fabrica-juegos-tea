@@ -3,136 +3,270 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#FDFBF7" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#121417" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#F6F6F8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
   <title>Fábrica de Juegos</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/svg+xml" href="icon.svg">
   <style>
     :root {
-      --bg: #FDFBF7;
+      /* Paleta Samsung One UI - Modo Claro */
+      --bg: #F6F6F8;
       --card: #FFFFFF;
-      --soft: #F3F0E8;
-      --border: #E5E0D5;
-      --accent: #3D8B74;
-      --accent-hover: #2F705D;
-      --accent-soft: rgba(61, 139, 116, 0.12);
-      --text: #1F2937;
-      --muted: #6B7280;
-      --danger: #DC2626;
+      --soft: #ECECEF;
+      --glass: rgba(255, 255, 255, 0.76);
+      --glass-border: rgba(0, 0, 0, 0.06);
+      --border: rgba(0, 0, 0, 0.05);
+      --accent: #0381FE;
+      --accent-dark: #0066CC;
+      --accent-soft: rgba(3, 129, 254, 0.11);
+      --text: #010102;
+      --muted: #6E6E77;
+      --danger: #E11D48;
+      --shadow: 0 8px 28px rgba(0, 0, 0, 0.035);
+      --oneui-spring: cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #121417;
-        --card: #1B1E23;
-        --soft: #252930;
-        --border: #2E333C;
-        --accent: #52B799;
-        --accent-hover: #67C9AC;
-        --accent-soft: rgba(82, 183, 153, 0.15);
-        --text: #F3F4F6;
-        --muted: #9CA3AF;
-        --danger: #F87171;
+        /* Paleta Samsung One UI - Modo Oscuro AMOLED */
+        --bg: #000000;
+        --card: #171719;
+        --soft: #242427;
+        --glass: rgba(23, 23, 25, 0.76);
+        --glass-border: rgba(255, 255, 255, 0.09);
+        --border: rgba(255, 255, 255, 0.07);
+        --accent: #3E9BFF;
+        --accent-dark: #2584EB;
+        --accent-soft: rgba(62, 155, 255, 0.15);
+        --text: #FAFAFC;
+        --muted: #8E8E98;
+        --danger: #FB7185;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
       }
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: "One UI Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.5;
       min-height: 100dvh;
+      overflow-x: hidden;
     }
 
-    /* Vista principal */
+    /* Barra superior fija con blur estilo One UI al hacer scroll */
+    .sticky-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 58px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--glass);
+      backdrop-filter: blur(24px) saturate(185%);
+      -webkit-backdrop-filter: blur(24px) saturate(185%);
+      border-bottom: 1px solid var(--glass-border);
+      z-index: 30;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-8px);
+      transition: opacity 0.28s var(--oneui-spring), transform 0.28s var(--oneui-spring);
+    }
+
+    .sticky-nav.visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .sticky-title {
+      font-size: 1.08rem;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+    }
+
+    /* Contenedor principal */
     #vista-inicio {
       max-width: 680px;
       margin: 0 auto;
-      padding: 20px 16px 48px;
+      padding: 0 16px 56px;
     }
-    header {
+
+    /* Cabecera expansiva estilo One UI (Viewing Area) */
+    .oneui-hero-header {
+      padding: 46px 8px 26px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      animation: fadeSlideDown 0.55s var(--oneui-spring) both;
+    }
+
+    .oneui-hero-header h1 {
+      font-size: 2.15rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 6px;
+    }
+
+    .oneui-hero-header .sub {
+      font-size: 0.94rem;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .header-actions {
+      width: 100%;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
-    }
-    h1 { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.02em; }
-    .sub { font-size: 0.85rem; color: var(--muted); }
-    .btn-pin {
-      background: var(--soft);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 50px;
-      padding: 8px 14px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      cursor: pointer;
     }
 
+    .pill-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--glass);
+      backdrop-filter: blur(18px) saturate(180%);
+      -webkit-backdrop-filter: blur(18px) saturate(180%);
+      border: 1px solid var(--glass-border);
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .dot-live {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10B981;
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+    }
+
+    .btn-pin {
+      background: var(--glass);
+      backdrop-filter: blur(18px) saturate(180%);
+      -webkit-backdrop-filter: blur(18px) saturate(180%);
+      color: var(--text);
+      border: 1px solid var(--glass-border);
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.22s var(--oneui-spring), background 0.2s;
+    }
+
+    .btn-pin:active {
+      transform: scale(0.94);
+    }
+
+    /* Tarjetas One UI (Squircle 28px) */
     .panel {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 20px;
-      margin-bottom: 24px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+      border-radius: 28px;
+      padding: 22px;
+      margin-bottom: 26px;
+      box-shadow: var(--shadow);
+      animation: cardEnter 0.6s var(--oneui-spring) 0.06s both;
     }
-    label {
+
+    .panel label {
       display: block;
-      font-weight: 600;
-      font-size: 0.95rem;
-      margin-bottom: 10px;
+      font-weight: 700;
+      font-size: 1.02rem;
+      letter-spacing: -0.01em;
+      margin-bottom: 12px;
     }
+
     textarea {
       width: 100%;
-      min-height: 104px;
-      padding: 14px;
-      border-radius: 16px;
+      min-height: 108px;
+      padding: 16px;
+      border-radius: 20px;
       border: 1px solid var(--border);
       background: var(--bg);
       color: var(--text);
       font-family: inherit;
-      font-size: 1rem;
+      font-size: 0.98rem;
       resize: vertical;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
+      transition: border-color 0.25s, box-shadow 0.25s;
     }
-    textarea:focus { outline: 2px solid var(--accent); border-color: transparent; }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px var(--accent-soft);
+    }
 
     .chips {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
+
     .chip {
       background: var(--soft);
       color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 50px;
-      padding: 6px 12px;
-      font-size: 0.8rem;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 0.82rem;
+      font-weight: 500;
       cursor: pointer;
+      transition: transform 0.22s var(--oneui-spring), background 0.2s;
     }
-    .chip:active { opacity: 0.7; }
+
+    .chip:active {
+      transform: scale(0.95);
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
 
     .btn-primary {
       width: 100%;
       background: var(--accent);
       color: #FFFFFF;
       border: none;
-      border-radius: 16px;
-      padding: 15px;
+      border-radius: 999px;
+      padding: 16px 20px;
       font-size: 1rem;
       font-weight: 700;
+      letter-spacing: -0.01em;
       cursor: pointer;
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 8px;
+      box-shadow: 0 8px 20px rgba(3, 129, 254, 0.25);
+      transition: transform 0.25s var(--oneui-spring), background 0.2s, box-shadow 0.2s;
     }
-    .btn-primary:disabled { opacity: 0.6; cursor: wait; }
+
+    .btn-primary:active {
+      transform: scale(0.965);
+      background: var(--accent-dark);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
 
     .estado {
       margin-top: 12px;
@@ -141,61 +275,261 @@
       color: var(--muted);
       min-height: 20px;
     }
-    .estado.error { color: var(--danger); font-weight: 600; }
 
-    /* Lista de juegos guardados */
+    .estado.error {
+      color: var(--danger);
+      font-weight: 600;
+    }
+
+    /* Sección de juegos guardados */
     .seccion-titulo {
+      padding: 0 8px;
       font-size: 1.05rem;
       font-weight: 700;
       margin-bottom: 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      animation: cardEnter 0.6s var(--oneui-spring) 0.12s both;
     }
+
     .badge-offline {
-      font-size: 0.75rem;
+      font-size: 0.76rem;
       background: var(--accent-soft);
       color: var(--accent);
-      padding: 3px 10px;
-      border-radius: 50px;
-      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-weight: 700;
     }
-    .lista-juegos { display: flex; flex-direction: column; gap: 10px; }
+
+    .lista-juegos {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      animation: cardEnter 0.6s var(--oneui-spring) 0.16s both;
+    }
+
     .juego-item {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 14px 16px;
+      border-radius: 24px;
+      padding: 16px 18px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 12px;
+      box-shadow: var(--shadow);
+      transition: transform 0.25s var(--oneui-spring);
     }
-    .juego-info { flex: 1; cursor: pointer; }
-    .juego-titulo { font-weight: 600; font-size: 0.95rem; margin-bottom: 2px; }
-    .juego-fecha { font-size: 0.78rem; color: var(--muted); }
-    .juego-acciones { display: flex; gap: 8px; }
+
+    .juego-item:active {
+      transform: scale(0.98);
+    }
+
+    .juego-info {
+      flex: 1;
+      cursor: pointer;
+    }
+
+    .juego-titulo {
+      font-weight: 600;
+      font-size: 0.96rem;
+      margin-bottom: 3px;
+    }
+
+    .juego-fecha {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .juego-acciones {
+      display: flex;
+      gap: 8px;
+    }
+
     .btn-jugar {
       background: var(--accent-soft);
       color: var(--accent);
       border: none;
-      border-radius: 12px;
-      padding: 8px 14px;
+      border-radius: 999px;
+      padding: 9px 16px;
       font-weight: 700;
-      font-size: 0.85rem;
+      font-size: 0.84rem;
       cursor: pointer;
+      transition: transform 0.2s var(--oneui-spring);
     }
+
+    .btn-jugar:active {
+      transform: scale(0.93);
+    }
+
     .btn-borrar {
       background: var(--soft);
       color: var(--muted);
       border: none;
-      border-radius: 12px;
-      padding: 8px 11px;
+      border-radius: 999px;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 0.85rem;
       cursor: pointer;
+      transition: transform 0.2s var(--oneui-spring);
     }
 
-    /* Vista reproductor a pantalla completa */
+    .btn-borrar:active {
+      transform: scale(0.9);
+    }
+
+    /* =========================================================
+       PANTALLA DE CARGA NEURAL HORIZONTAL (FONDO BLANCO + GEMINI)
+       ========================================================= */
+    #pantalla-carga {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #FFFFFF;
+      z-index: 200;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      opacity: 0;
+      transition: opacity 0.35s var(--oneui-spring);
+    }
+
+    #pantalla-carga.activa {
+      display: flex;
+      opacity: 1;
+    }
+
+    .neural-wrapper {
+      width: 100%;
+      max-width: 880px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .neural-svg {
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+
+    .base-line {
+      fill: none;
+      stroke: #111827;
+      stroke-width: 1.25;
+      stroke-opacity: 0.26;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .base-dot {
+      fill: #111827;
+    }
+
+    .target-node-outer {
+      fill: #FFFFFF;
+      stroke: #111827;
+      stroke-width: 1.5;
+    }
+
+    .target-node-inner {
+      fill: #111827;
+    }
+
+    /* Pulsos con colores de Gemini viajando de izquierda a derecha */
+    .gemini-pulse {
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 150 760;
+      stroke-dashoffset: 150;
+      animation: flowLeftToRight 2.7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
+    .gemini-pulse.p1 { stroke: url(#geminiGradA); animation-duration: 2.5s; animation-delay: 0s; }
+    .gemini-pulse.p2 { stroke: url(#geminiGradB); animation-duration: 2.8s; animation-delay: 0.25s; }
+    .gemini-pulse.p3 { stroke: url(#geminiGradA); animation-duration: 2.6s; animation-delay: 0.5s; }
+    .gemini-pulse.p4 { stroke: url(#geminiGradB); animation-duration: 3.0s; animation-delay: 0.15s; }
+    .gemini-pulse.p5 { stroke: url(#geminiGradA); animation-duration: 2.7s; animation-delay: 0.4s; }
+    .gemini-pulse.p6 { stroke: url(#geminiGradB); animation-duration: 2.9s; animation-delay: 0.7s; }
+    .gemini-pulse.p7 { stroke: url(#geminiGradA); animation-duration: 2.4s; animation-delay: 0.9s; }
+
+    @keyframes flowLeftToRight {
+      0% {
+        stroke-dashoffset: 160;
+        opacity: 0;
+      }
+      12% {
+        opacity: 1;
+      }
+      85% {
+        opacity: 1;
+      }
+      100% {
+        stroke-dashoffset: -860;
+        opacity: 0;
+      }
+    }
+
+    /* Ondas en los nodos terminales izquierdo y derecho */
+    .terminal-halo {
+      fill: none;
+      stroke-width: 2;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+
+    .halo-left {
+      stroke: #4285F4;
+      animation: nodePing 2.7s ease-out infinite;
+    }
+
+    .halo-right {
+      stroke: #D96570;
+      animation: nodePing 2.7s ease-out 1.35s infinite;
+    }
+
+    @keyframes nodePing {
+      0% {
+        transform: scale(0.7);
+        opacity: 0.9;
+      }
+      100% {
+        transform: scale(2.4);
+        opacity: 0;
+      }
+    }
+
+    .carga-info {
+      text-align: center;
+      color: #111827;
+    }
+
+    .carga-titulo {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      background: linear-gradient(90deg, #111827 0%, #3B82F6 50%, #9333EA 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 4px;
+    }
+
+    .carga-sub {
+      font-size: 0.85rem;
+      color: #6B7280;
+    }
+
+    /* =========================================================
+       REPRODUCTOR DE JUEGO CON BARRA TRANSLÚCIDA ONE UI
+       ========================================================= */
     #vista-juego {
       display: none;
       position: fixed;
@@ -203,56 +537,73 @@
       background: var(--bg);
       flex-direction: column;
       z-index: 50;
+      animation: fadeSlideUp 0.35s var(--oneui-spring) both;
     }
+
     .barra-juego {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 14px;
-      background: var(--card);
-      border-bottom: 1px solid var(--border);
+      padding: 10px 16px;
+      background: var(--glass);
+      backdrop-filter: blur(24px) saturate(185%);
+      -webkit-backdrop-filter: blur(24px) saturate(185%);
+      border-bottom: 1px solid var(--glass-border);
       gap: 8px;
     }
+
     .btn-bar {
       background: var(--soft);
       color: var(--text);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 8px 12px;
-      font-size: 0.85rem;
+      border-radius: 999px;
+      padding: 8px 15px;
+      font-size: 0.84rem;
       font-weight: 600;
       cursor: pointer;
+      transition: transform 0.2s var(--oneui-spring);
     }
+
+    .btn-bar:active {
+      transform: scale(0.94);
+    }
+
     .btn-bar.activo {
       background: var(--accent-soft);
       color: var(--accent);
-      border-color: var(--accent);
+      border-color: transparent;
     }
+
     #panel-retoque {
       display: none;
-      padding: 10px 14px;
-      background: var(--card);
-      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      background: var(--glass);
+      backdrop-filter: blur(24px) saturate(185%);
+      -webkit-backdrop-filter: blur(24px) saturate(185%);
+      border-bottom: 1px solid var(--glass-border);
       gap: 8px;
     }
+
     #panel-retoque input {
       flex: 1;
-      padding: 10px 12px;
-      border-radius: 12px;
+      padding: 11px 16px;
+      border-radius: 999px;
       border: 1px solid var(--border);
-      background: var(--bg);
+      background: var(--card);
       color: var(--text);
       font-size: 0.9rem;
     }
+
     #panel-retoque button {
       background: var(--accent);
       color: #fff;
       border: none;
-      border-radius: 12px;
-      padding: 0 16px;
+      border-radius: 999px;
+      padding: 0 18px;
       font-weight: 700;
       cursor: pointer;
     }
+
     iframe {
       flex: 1;
       width: 100%;
@@ -260,51 +611,96 @@
       background: #FDFBF7;
     }
 
-    /* Modal PIN */
+    /* Modal PIN con blur One UI */
     #modal-pin {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.55);
+      background: rgba(0, 0, 0, 0.42);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       align-items: center;
       justify-content: center;
       padding: 20px;
       z-index: 100;
     }
+
     .modal-caja {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 24px;
+      background: var(--glass);
+      backdrop-filter: blur(28px) saturate(190%);
+      -webkit-backdrop-filter: blur(28px) saturate(190%);
+      border: 1px solid var(--glass-border);
+      border-radius: 30px;
+      padding: 26px 24px;
       width: 100%;
       max-width: 340px;
       text-align: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
+      animation: modalPop 0.35s var(--oneui-spring) both;
     }
-    .modal-caja h2 { font-size: 1.15rem; margin-bottom: 8px; }
-    .modal-caja p { font-size: 0.85rem; color: var(--muted); margin-bottom: 16px; }
+
+    .modal-caja h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .modal-caja p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
     .modal-caja input {
       width: 100%;
-      padding: 12px;
-      font-size: 1.3rem;
+      padding: 14px;
+      font-size: 1.35rem;
       text-align: center;
-      letter-spacing: 0.3em;
-      border-radius: 14px;
+      letter-spacing: 0.35em;
+      border-radius: 18px;
       border: 1px solid var(--border);
-      background: var(--bg);
+      background: var(--card);
       color: var(--text);
-      margin-bottom: 14px;
+      margin-bottom: 16px;
+    }
+
+    @keyframes cardEnter {
+      from { opacity: 0; transform: translateY(18px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes fadeSlideDown {
+      from { opacity: 0; transform: translateY(-12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes modalPop {
+      from { opacity: 0; transform: scale(0.9) translateY(14px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
     }
   </style>
 </head>
 <body>
 
+  <!-- Barra fija superior One UI con efecto blur -->
+  <nav class="sticky-nav" id="sticky-nav">
+    <span class="sticky-title">Fábrica de Juegos</span>
+    <button class="btn-pin" onclick="abrirModalPin()">🔒 PIN</button>
+  </nav>
+
   <div id="vista-inicio">
-    <header>
-      <div>
-        <h1>Fábrica de Juegos</h1>
-        <div class="sub">Actividades a medida · TEA y TDAH</div>
+    <header class="oneui-hero-header">
+      <h1>Fábrica de Juegos</h1>
+      <div class="sub">Actividades educativas a medida · TEA y TDAH</div>
+      <div class="header-actions">
+        <span class="pill-status"><span class="dot-live"></span> Listo para crear</span>
+        <button class="btn-pin" onclick="abrirModalPin()">🔒 PIN</button>
       </div>
-      <button class="btn-pin" onclick="abrirModalPin()">🔒 PIN</button>
     </header>
 
     <section class="panel">
@@ -325,10 +721,156 @@
     <section>
       <div class="seccion-titulo">
         <span>Juegos guardados</span>
-        <span class="badge-offline">Disponibles sin internet</span>
+        <span class="badge-offline">Modo sin conexión</span>
       </div>
       <div class="lista-juegos" id="lista-juegos"></div>
     </section>
+  </div>
+
+  <!-- Pantalla de carga horizontal con red neural y colores de Gemini -->
+  <div id="pantalla-carga" aria-live="polite">
+    <div class="neural-wrapper">
+      <svg class="neural-svg" viewBox="0 0 900 380" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="geminiGradA" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#4285F4" stop-opacity="0" />
+            <stop offset="30%" stop-color="#4285F4" />
+            <stop offset="65%" stop-color="#9B72CB" />
+            <stop offset="90%" stop-color="#D96570" />
+            <stop offset="100%" stop-color="#D96570" stop-opacity="0" />
+          </linearGradient>
+          <linearGradient id="geminiGradB" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#38BDF8" stop-opacity="0" />
+            <stop offset="35%" stop-color="#38BDF8" />
+            <stop offset="70%" stop-color="#6366F1" />
+            <stop offset="92%" stop-color="#EC4899" />
+            <stop offset="100%" stop-color="#EC4899" stop-opacity="0" />
+          </linearGradient>
+        </defs>
+
+        <!-- CAPA BASE: LÍNEAS NEGRAS GEOMÉTRICAS (SIMETRÍA HORIZONTAL) -->
+        <g>
+          <!-- Eje central -->
+          <path id="path-center" class="base-line" d="M 48 190 L 852 190" />
+
+          <!-- Contorno exterior de diamante -->
+          <path id="path-outer-top" class="base-line" d="M 48 190 C 125 190, 165 110, 225 65 L 320 26 L 580 26 L 675 65 C 735 110, 775 190, 852 190" />
+          <path id="path-outer-bot" class="base-line" d="M 48 190 C 125 190, 165 270, 225 315 L 320 354 L 580 354 L 675 315 C 735 270, 775 190, 852 190" />
+
+          <!-- Segundo nivel de diamante -->
+          <path id="path-mid-top" class="base-line" d="M 48 190 C 120 190, 160 135, 245 95 L 360 52 L 540 52 L 655 95 C 740 135, 780 190, 852 190" />
+          <path id="path-mid-bot" class="base-line" d="M 48 190 C 120 190, 160 245, 245 285 L 360 328 L 540 328 L 655 285 C 740 245, 780 190, 852 190" />
+
+          <!-- Pistas paralelas internas (efecto circuito) -->
+          <path id="path-track-1" class="base-line" d="M 48 190 C 130 190, 175 148, 260 128 L 410 128 C 435 128, 442 145, 450 145 C 458 145, 465 128, 490 128 L 640 128 C 725 148, 770 190, 852 190" />
+          <path id="path-track-2" class="base-line" d="M 48 190 C 135 190, 185 162, 275 152 L 405 152 C 430 152, 440 166, 450 166 C 460 166, 470 152, 495 152 L 625 152 C 715 162, 765 190, 852 190" />
+          <path id="path-track-3" class="base-line" d="M 48 190 C 135 190, 185 218, 275 228 L 405 228 C 430 228, 440 214, 450 214 C 460 214, 470 228, 495 228 L 625 228 C 715 218, 765 190, 852 190" />
+          <path id="path-track-4" class="base-line" d="M 48 190 C 130 190, 175 232, 260 252 L 410 252 C 435 252, 442 235, 450 235 C 458 235, 465 252, 490 252 L 640 252 C 725 232, 770 190, 852 190" />
+
+          <!-- Pistas intermedias adicionales -->
+          <path class="base-line" d="M 48 190 C 125 190, 170 142, 250 112 L 650 112 C 730 142, 775 190, 852 190" />
+          <path class="base-line" d="M 48 190 C 125 190, 170 238, 250 268 L 650 268 C 730 238, 775 190, 852 190" />
+          <path class="base-line" d="M 48 190 C 140 190, 195 174, 290 174 L 610 174 C 705 174, 760 190, 852 190" />
+          <path class="base-line" d="M 48 190 C 140 190, 195 206, 290 206 L 610 206 C 705 206, 760 190, 852 190" />
+
+          <!-- Entramado romboidal cruzado (45 grados) -->
+          <path id="path-cross-1" class="base-line" d="M 48 190 C 135 190, 180 140, 265 95 L 360 190 L 450 100 L 540 190 L 635 95 C 720 140, 765 190, 852 190" />
+          <path id="path-cross-2" class="base-line" d="M 48 190 C 135 190, 180 240, 265 285 L 360 190 L 450 280 L 540 190 L 635 285 C 720 240, 765 190, 852 190" />
+          <path class="base-line" d="M 225 65 L 350 190 L 225 315" />
+          <path class="base-line" d="M 675 65 L 550 190 L 675 315" />
+          <path class="base-line" d="M 320 26 L 450 156 L 580 26" />
+          <path class="base-line" d="M 320 354 L 450 224 L 580 354" />
+          <path class="base-line" d="M 360 52 L 498 190 L 360 328" />
+          <path class="base-line" d="M 540 52 L 402 190 L 540 328" />
+        </g>
+
+        <!-- CAPA DE PULSOS ANIMADOS EN COLORES DE GEMINI -->
+        <g>
+          <use href="#path-center" class="gemini-pulse p1" />
+          <use href="#path-outer-top" class="gemini-pulse p2" />
+          <use href="#path-outer-bot" class="gemini-pulse p3" />
+          <use href="#path-mid-top" class="gemini-pulse p4" />
+          <use href="#path-mid-bot" class="gemini-pulse p5" />
+          <use href="#path-track-1" class="gemini-pulse p6" />
+          <use href="#path-track-4" class="gemini-pulse p7" />
+          <use href="#path-cross-1" class="gemini-pulse p2" />
+          <use href="#path-cross-2" class="gemini-pulse p5" />
+        </g>
+
+        <!-- CAPA DE NODOS E INTERSECCIONES -->
+        <g>
+          <!-- Puntos sólidos pequeños en intersecciones -->
+          <circle class="base-dot" cx="225" cy="65" r="2.8" />
+          <circle class="base-dot" cx="225" cy="315" r="2.8" />
+          <circle class="base-dot" cx="320" cy="26" r="2.8" />
+          <circle class="base-dot" cx="580" cy="26" r="2.8" />
+          <circle class="base-dot" cx="320" cy="354" r="2.8" />
+          <circle class="base-dot" cx="580" cy="354" r="2.8" />
+          <circle class="base-dot" cx="675" cy="65" r="2.8" />
+          <circle class="base-dot" cx="675" cy="315" r="2.8" />
+          <circle class="base-dot" cx="360" cy="52" r="2.8" />
+          <circle class="base-dot" cx="540" cy="52" r="2.8" />
+          <circle class="base-dot" cx="360" cy="328" r="2.8" />
+          <circle class="base-dot" cx="540" cy="328" r="2.8" />
+          <circle class="base-dot" cx="450" cy="100" r="3" />
+          <circle class="base-dot" cx="450" cy="280" r="3" />
+          <circle class="base-dot" cx="450" cy="190" r="3.2" />
+
+          <!-- Nodos con doble anillo (como en la imagen de referencia) -->
+          <g transform="translate(265, 95)">
+            <circle class="target-node-outer" r="6.5" />
+            <circle class="target-node-inner" r="2.5" />
+          </g>
+          <g transform="translate(265, 285)">
+            <circle class="target-node-outer" r="6.5" />
+            <circle class="target-node-inner" r="2.5" />
+          </g>
+          <g transform="translate(360, 190)">
+            <circle class="target-node-outer" r="7" />
+            <circle class="target-node-inner" r="2.8" />
+          </g>
+          <g transform="translate(540, 190)">
+            <circle class="target-node-outer" r="7" />
+            <circle class="target-node-inner" r="2.8" />
+          </g>
+          <g transform="translate(635, 95)">
+            <circle class="target-node-outer" r="6.5" />
+            <circle class="target-node-inner" r="2.5" />
+          </g>
+          <g transform="translate(635, 285)">
+            <circle class="target-node-outer" r="6.5" />
+            <circle class="target-node-inner" r="2.5" />
+          </g>
+          <g transform="translate(450, 156)">
+            <circle class="target-node-outer" r="6" />
+            <circle class="target-node-inner" r="2.3" />
+          </g>
+          <g transform="translate(450, 224)">
+            <circle class="target-node-outer" r="6" />
+            <circle class="target-node-inner" r="2.3" />
+          </g>
+
+          <!-- Nodo terminal IZQUIERDO (Origen) -->
+          <g transform="translate(48, 190)">
+            <circle class="terminal-halo halo-left" r="11" />
+            <circle class="target-node-outer" r="10" />
+            <circle class="target-node-inner" r="4.5" />
+          </g>
+
+          <!-- Nodo terminal DERECHO (Destino) -->
+          <g transform="translate(852, 190)">
+            <circle class="terminal-halo halo-right" r="11" />
+            <circle class="target-node-outer" r="10" />
+            <circle class="target-node-inner" r="4.5" />
+          </g>
+        </g>
+      </svg>
+
+      <div class="carga-info">
+        <div class="carga-titulo" id="carga-titulo">Creando juego a medida...</div>
+        <div class="carga-sub" id="carga-sub">Aplicando colores suaves y controles táctiles accesibles</div>
+      </div>
+    </div>
   </div>
 
   <!-- Reproductor a pantalla completa -->
@@ -347,7 +889,7 @@
     <iframe id="visor-juego" sandbox="allow-scripts"></iframe>
   </div>
 
-  <!-- Modal PIN -->
+  <!-- Modal PIN con desenfoque One UI -->
   <div id="modal-pin">
     <div class="modal-caja">
       <h2>Código PIN de acceso</h2>
@@ -362,10 +904,55 @@
     const STORAGE_KEY = "juegos_tea_guardados_v1";
     const PIN_KEY = "fabrica_juegos_pin";
 
-    let juegoActual = null; // { id, titulo, html, fecha }
+    let juegoActual = null;
+    let intervaloMensajes = null;
 
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js');
+    }
+
+    // Cabecera fija One UI al hacer scroll
+    window.addEventListener('scroll', () => {
+      const sticky = document.getElementById('sticky-nav');
+      if (window.scrollY > 68) {
+        sticky.classList.add('visible');
+      } else {
+        sticky.classList.remove('visible');
+      }
+    }, { passive: true });
+
+    function mostrarPantallaCarga(esRetoque) {
+      const overlay = document.getElementById('pantalla-carga');
+      const titulo = document.getElementById('carga-titulo');
+      const sub = document.getElementById('carga-sub');
+
+      const mensajes = esRetoque
+        ? [
+            "Aplicando ajustes al juego...",
+            "Adaptando piezas y botones táctiles...",
+            "Comprobando paleta calmada sin penalización..."
+          ]
+        : [
+            "Diseñando estructura del juego...",
+            "Dibujando ilustraciones vectoriales limpias...",
+            "Ajustando refuerzo positivo y controles táctiles..."
+          ];
+
+      let idx = 0;
+      titulo.textContent = esRetoque ? "Retocando actividad..." : "Creando juego a medida...";
+      sub.textContent = mensajes[0];
+
+      overlay.classList.add('activa');
+      clearInterval(intervaloMensajes);
+      intervaloMensajes = setInterval(() => {
+        idx = (idx + 1) % mensajes.length;
+        sub.textContent = mensajes[idx];
+      }, 3200);
+    }
+
+    function ocultarPantallaCarga() {
+      clearInterval(intervaloMensajes);
+      document.getElementById('pantalla-carga').classList.remove('activa');
     }
 
     function obtenerPin() {
@@ -401,7 +988,7 @@
       const lista = document.getElementById('lista-juegos');
       const juegos = obtenerGuardados();
       if (!juegos.length) {
-        lista.innerHTML = '<div class="sub" style="text-align:center; padding:20px;">Aún no hay juegos guardados. Los que crees aquí se guardarán solos para usarlos sin conexión.</div>';
+        lista.innerHTML = '<div class="sub" style="text-align:center; padding:24px 12px;">Aún no hay juegos guardados. Los que crees aquí se guardarán solos para usarlos sin conexión.</div>';
         return;
       }
       lista.innerHTML = '';
@@ -501,13 +1088,14 @@
       if (!promptTexto) return;
 
       estadoEl.className = 'estado';
+      estadoEl.textContent = '';
       if (esRetoque) {
         btnRetoque.disabled = true;
-        btnRetoque.textContent = '...';
       } else {
         btnCrear.disabled = true;
-        estadoEl.textContent = 'Diseñando el juego a medida (tarda unos 10-15 segundos)...';
       }
+
+      mostrarPantallaCarga(esRetoque);
 
       try {
         const resp = await fetch(WORKER_URL, {
@@ -548,7 +1136,6 @@
         }
 
         guardarJuegoActual();
-        estadoEl.textContent = '';
         abrirEnVisor(juegoActual);
 
       } catch (err) {
@@ -556,9 +1143,9 @@
         estadoEl.textContent = err.message;
         if (esRetoque) alert(err.message);
       } finally {
+        ocultarPantallaCarga();
         btnCrear.disabled = false;
         btnRetoque.disabled = false;
-        btnRetoque.textContent = 'Aplicar';
       }
     }
 
