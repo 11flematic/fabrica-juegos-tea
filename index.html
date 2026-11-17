@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#FDFBF7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#121417" media="(prefers-color-scheme: dark)">
+  <title>Fábrica de Juegos</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <style>
+    :root {
+      --bg: #FDFBF7;
+      --card: #FFFFFF;
+      --soft: #F3F0E8;
+      --border: #E5E0D5;
+      --accent: #3D8B74;
+      --accent-hover: #2F705D;
+      --accent-soft: rgba(61, 139, 116, 0.12);
+      --text: #1F2937;
+      --muted: #6B7280;
+      --danger: #DC2626;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #121417;
+        --card: #1B1E23;
+        --soft: #252930;
+        --border: #2E333C;
+        --accent: #52B799;
+        --accent-hover: #67C9AC;
+        --accent-soft: rgba(82, 183, 153, 0.15);
+        --text: #F3F4F6;
+        --muted: #9CA3AF;
+        --danger: #F87171;
+      }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100dvh;
+    }
+
+    /* Vista principal */
+    #vista-inicio {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 20px 16px 48px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    h1 { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.02em; }
+    .sub { font-size: 0.85rem; color: var(--muted); }
+    .btn-pin {
+      background: var(--soft);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 8px 14px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+    }
+    textarea {
+      width: 100%;
+      min-height: 104px;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 1rem;
+      resize: vertical;
+      margin-bottom: 12px;
+    }
+    textarea:focus { outline: 2px solid var(--accent); border-color: transparent; }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .chip {
+      background: var(--soft);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .chip:active { opacity: 0.7; }
+
+    .btn-primary {
+      width: 100%;
+      background: var(--accent);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 16px;
+      padding: 15px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary:disabled { opacity: 0.6; cursor: wait; }
+
+    .estado {
+      margin-top: 12px;
+      font-size: 0.88rem;
+      text-align: center;
+      color: var(--muted);
+      min-height: 20px;
+    }
+    .estado.error { color: var(--danger); font-weight: 600; }
+
+    /* Lista de juegos guardados */
+    .seccion-titulo {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .badge-offline {
+      font-size: 0.75rem;
+      background: var(--accent-soft);
+      color: var(--accent);
+      padding: 3px 10px;
+      border-radius: 50px;
+      font-weight: 600;
+    }
+    .lista-juegos { display: flex; flex-direction: column; gap: 10px; }
+    .juego-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .juego-info { flex: 1; cursor: pointer; }
+    .juego-titulo { font-weight: 600; font-size: 0.95rem; margin-bottom: 2px; }
+    .juego-fecha { font-size: 0.78rem; color: var(--muted); }
+    .juego-acciones { display: flex; gap: 8px; }
+    .btn-jugar {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: none;
+      border-radius: 12px;
+      padding: 8px 14px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    .btn-borrar {
+      background: var(--soft);
+      color: var(--muted);
+      border: none;
+      border-radius: 12px;
+      padding: 8px 11px;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    /* Vista reproductor a pantalla completa */
+    #vista-juego {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      flex-direction: column;
+      z-index: 50;
+    }
+    .barra-juego {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      gap: 8px;
+    }
+    .btn-bar {
+      background: var(--soft);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-bar.activo {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    #panel-retoque {
+      display: none;
+      padding: 10px 14px;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      gap: 8px;
+    }
+    #panel-retoque input {
+      flex: 1;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.9rem;
+    }
+    #panel-retoque button {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 0 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    iframe {
+      flex: 1;
+      width: 100%;
+      border: none;
+      background: #FDFBF7;
+    }
+
+    /* Modal PIN */
+    #modal-pin {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 100;
+    }
+    .modal-caja {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 24px;
+      width: 100%;
+      max-width: 340px;
+      text-align: center;
+    }
+    .modal-caja h2 { font-size: 1.15rem; margin-bottom: 8px; }
+    .modal-caja p { font-size: 0.85rem; color: var(--muted); margin-bottom: 16px; }
+    .modal-caja input {
+      width: 100%;
+      padding: 12px;
+      font-size: 1.3rem;
+      text-align: center;
+      letter-spacing: 0.3em;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="vista-inicio">
+    <header>
+      <div>
+        <h1>Fábrica de Juegos</h1>
+        <div class="sub">Actividades a medida · TEA y TDAH</div>
+      </div>
+      <button class="btn-pin" onclick="abrirModalPin()">🔒 PIN</button>
+    </header>
+
+    <section class="panel">
+      <label for="prompt-input">¿Qué juego quieres crear hoy?</label>
+      <textarea id="prompt-input" placeholder="Ej: Juego de parejas de trenes de colores con 6 cartas grandes y refuerzo positivo..."></textarea>
+      
+      <div class="chips">
+        <button class="chip" onclick="usarIdea('Juego de memoria de parejas de dinosaurios con 6 cartas grandes y colores suaves')">🦕 Parejas dinosaurios</button>
+        <button class="chip" onclick="usarIdea('Ordenar en 4 pasos la rutina de lavarse los dientes con dibujos claros')">🪥 Secuencia rutina</button>
+        <button class="chip" onclick="usarIdea('Clasificar vehículos en dos grupos: los que vuelan y los que van por carretera')">✈️ Clasificar vehículos</button>
+        <button class="chip" onclick="usarIdea('Juego de atención: tocar solo las estrellas amarillas entre varias formas suaves')">⭐ Atención selectiva</button>
+      </div>
+
+      <button class="btn-primary" id="btn-crear" onclick="generarJuego(false)">✨ Crear juego</button>
+      <div class="estado" id="estado"></div>
+    </section>
+
+    <section>
+      <div class="seccion-titulo">
+        <span>Juegos guardados</span>
+        <span class="badge-offline">Disponibles sin internet</span>
+      </div>
+      <div class="lista-juegos" id="lista-juegos"></div>
+    </section>
+  </div>
+
+  <!-- Reproductor a pantalla completa -->
+  <div id="vista-juego">
+    <div class="barra-juego">
+      <button class="btn-bar" onclick="cerrarJuego()">← Volver</button>
+      <div style="display:flex; gap:8px;">
+        <button class="btn-bar" id="btn-toggle-retoque" onclick="toggleRetoque()">✏️ Retocar</button>
+        <button class="btn-bar activo" id="btn-guardar" onclick="guardarJuegoActual()">💾 Guardado</button>
+      </div>
+    </div>
+    <div id="panel-retoque">
+      <input type="text" id="input-retoque" placeholder="Ej: Haz los botones más grandes o pon menos piezas...">
+      <button id="btn-aplicar-retoque" onclick="generarJuego(true)">Aplicar</button>
+    </div>
+    <iframe id="visor-juego" sandbox="allow-scripts"></iframe>
+  </div>
+
+  <!-- Modal PIN -->
+  <div id="modal-pin">
+    <div class="modal-caja">
+      <h2>Código PIN de acceso</h2>
+      <p>Introduce el PIN de 4 dígitos configurado en Cloudflare. Se guardará en este dispositivo.</p>
+      <input type="password" id="input-pin" inputmode="numeric" maxlength="8" placeholder="••••">
+      <button class="btn-primary" onclick="guardarPin()">Guardar PIN</button>
+    </div>
+  </div>
+
+  <script>
+    const WORKER_URL = "https://fabrica-juegos.ivan1cintu.workers.dev";
+    const STORAGE_KEY = "juegos_tea_guardados_v1";
+    const PIN_KEY = "fabrica_juegos_pin";
+
+    let juegoActual = null; // { id, titulo, html, fecha }
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js');
+    }
+
+    function obtenerPin() {
+      return localStorage.getItem(PIN_KEY) || "";
+    }
+
+    function abrirModalPin() {
+      document.getElementById('input-pin').value = obtenerPin();
+      document.getElementById('modal-pin').style.display = 'flex';
+    }
+
+    function guardarPin() {
+      const val = document.getElementById('input-pin').value.trim();
+      if (val) {
+        localStorage.setItem(PIN_KEY, val);
+        document.getElementById('modal-pin').style.display = 'none';
+      }
+    }
+
+    function usarIdea(texto) {
+      document.getElementById('prompt-input').value = texto;
+    }
+
+    function obtenerGuardados() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      } catch {
+        return [];
+      }
+    }
+
+    function renderizarLista() {
+      const lista = document.getElementById('lista-juegos');
+      const juegos = obtenerGuardados();
+      if (!juegos.length) {
+        lista.innerHTML = '<div class="sub" style="text-align:center; padding:20px;">Aún no hay juegos guardados. Los que crees aquí se guardarán solos para usarlos sin conexión.</div>';
+        return;
+      }
+      lista.innerHTML = '';
+      juegos.forEach(j => {
+        const item = document.createElement('div');
+        item.className = 'juego-item';
+
+        const info = document.createElement('div');
+        info.className = 'juego-info';
+        info.onclick = () => abrirEnVisor(j);
+
+        const titulo = document.createElement('div');
+        titulo.className = 'juego-titulo';
+        titulo.textContent = j.titulo;
+
+        const fecha = document.createElement('div');
+        fecha.className = 'juego-fecha';
+        fecha.textContent = j.fecha;
+
+        info.append(titulo, fecha);
+
+        const acciones = document.createElement('div');
+        acciones.className = 'juego-acciones';
+
+        const btnJugar = document.createElement('button');
+        btnJugar.className = 'btn-jugar';
+        btnJugar.textContent = 'Jugar';
+        btnJugar.onclick = () => abrirEnVisor(j);
+
+        const btnBorrar = document.createElement('button');
+        btnBorrar.className = 'btn-borrar';
+        btnBorrar.textContent = '✕';
+        btnBorrar.onclick = () => borrarJuego(j.id);
+
+        acciones.append(btnJugar, btnBorrar);
+        item.append(info, acciones);
+        lista.appendChild(item);
+      });
+    }
+
+    function guardarJuegoActual() {
+      if (!juegoActual) return;
+      const juegos = obtenerGuardados();
+      const idx = juegos.findIndex(x => x.id === juegoActual.id);
+      if (idx >= 0) {
+        juegos[idx] = juegoActual;
+      } else {
+        juegos.unshift(juegoActual);
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(juegos.slice(0, 30)));
+      const btn = document.getElementById('btn-guardar');
+      btn.textContent = '💾 Guardado';
+      btn.classList.add('activo');
+      renderizarLista();
+    }
+
+    function borrarJuego(id) {
+      const filtrados = obtenerGuardados().filter(x => x.id !== id);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(filtrados));
+      renderizarLista();
+    }
+
+    function abrirEnVisor(juego) {
+      juegoActual = juego;
+      document.getElementById('visor-juego').srcdoc = juego.html;
+      document.getElementById('vista-juego').style.display = 'flex';
+      document.getElementById('panel-retoque').style.display = 'none';
+      document.getElementById('input-retoque').value = '';
+    }
+
+    function cerrarJuego() {
+      document.getElementById('vista-juego').style.display = 'none';
+      document.getElementById('visor-juego').srcdoc = '';
+      renderizarLista();
+    }
+
+    function toggleRetoque() {
+      const panel = document.getElementById('panel-retoque');
+      panel.style.display = panel.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    async function generarJuego(esRetoque) {
+      const pin = obtenerPin();
+      if (!pin) {
+        abrirModalPin();
+        return;
+      }
+
+      const estadoEl = document.getElementById('estado');
+      const btnCrear = document.getElementById('btn-crear');
+      const btnRetoque = document.getElementById('btn-aplicar-retoque');
+
+      const promptTexto = esRetoque
+        ? document.getElementById('input-retoque').value.trim()
+        : document.getElementById('prompt-input').value.trim();
+
+      if (!promptTexto) return;
+
+      estadoEl.className = 'estado';
+      if (esRetoque) {
+        btnRetoque.disabled = true;
+        btnRetoque.textContent = '...';
+      } else {
+        btnCrear.disabled = true;
+        estadoEl.textContent = 'Diseñando el juego a medida (tarda unos 10-15 segundos)...';
+      }
+
+      try {
+        const resp = await fetch(WORKER_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            pin: pin,
+            prompt: promptTexto,
+            currentCode: esRetoque && juegoActual ? juegoActual.html : null
+          })
+        });
+
+        const data = await resp.json();
+
+        if (resp.status === 401) {
+          localStorage.removeItem(PIN_KEY);
+          abrirModalPin();
+          throw new Error('PIN incorrecto. Vuelve a introducirlo.');
+        }
+
+        if (!resp.ok || !data.html) {
+          throw new Error(data.error || 'No se pudo generar el juego');
+        }
+
+        const ahora = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+
+        if (esRetoque && juegoActual) {
+          juegoActual.html = data.html;
+          juegoActual.fecha = 'Editado · ' + ahora;
+        } else {
+          const tituloCorto = promptTexto.length > 52 ? promptTexto.slice(0, 52) + '...' : promptTexto;
+          juegoActual = {
+            id: Date.now().toString(),
+            titulo: tituloCorto,
+            html: data.html,
+            fecha: ahora
+          };
+        }
+
+        guardarJuegoActual();
+        estadoEl.textContent = '';
+        abrirEnVisor(juegoActual);
+
+      } catch (err) {
+        estadoEl.className = 'estado error';
+        estadoEl.textContent = err.message;
+        if (esRetoque) alert(err.message);
+      } finally {
+        btnCrear.disabled = false;
+        btnRetoque.disabled = false;
+        btnRetoque.textContent = 'Aplicar';
+      }
+    }
+
+    if (!obtenerPin()) {
+      abrirModalPin();
+    }
+    renderizarLista();
+  </script>
+</body>
+</html>
