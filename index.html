@@ -12,18 +12,20 @@
     :root {
       /* Paleta Samsung One UI - Modo Claro */
       --bg: #F6F6F8;
-      --card: #FFFFFF;
-      --soft: #ECECEF;
-      --glass: rgba(255, 255, 255, 0.76);
-      --glass-border: rgba(0, 0, 0, 0.06);
-      --border: rgba(0, 0, 0, 0.05);
+      --card: rgba(255, 255, 255, 0.78);
+      --input-bg: rgba(255, 255, 255, 0.65);
+      --soft: rgba(236, 236, 239, 0.75);
+      --glass: rgba(255, 255, 255, 0.72);
+      --glass-border: rgba(255, 255, 255, 0.65);
+      --border: rgba(0, 0, 0, 0.06);
       --accent: #0381FE;
       --accent-dark: #0066CC;
-      --accent-soft: rgba(3, 129, 254, 0.11);
+      --accent-soft: rgba(3, 129, 254, 0.12);
       --text: #010102;
-      --muted: #6E6E77;
+      --muted: #5C5C66;
       --danger: #E11D48;
-      --shadow: 0 8px 28px rgba(0, 0, 0, 0.035);
+      --orb-opacity: 0.36;
+      --shadow: 0 8px 32px rgba(31, 38, 135, 0.05);
       --oneui-spring: cubic-bezier(0.22, 1, 0.36, 1);
     }
 
@@ -31,18 +33,20 @@
       :root {
         /* Paleta Samsung One UI - Modo Oscuro AMOLED */
         --bg: #000000;
-        --card: #171719;
-        --soft: #242427;
-        --glass: rgba(23, 23, 25, 0.76);
+        --card: rgba(23, 23, 27, 0.72);
+        --input-bg: rgba(14, 14, 17, 0.65);
+        --soft: rgba(38, 38, 44, 0.78);
+        --glass: rgba(23, 23, 27, 0.74);
         --glass-border: rgba(255, 255, 255, 0.09);
-        --border: rgba(255, 255, 255, 0.07);
+        --border: rgba(255, 255, 255, 0.08);
         --accent: #3E9BFF;
         --accent-dark: #2584EB;
-        --accent-soft: rgba(62, 155, 255, 0.15);
+        --accent-soft: rgba(62, 155, 255, 0.16);
         --text: #FAFAFC;
-        --muted: #8E8E98;
+        --muted: #9898A3;
         --danger: #FB7185;
-        --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+        --orb-opacity: 0.28;
+        --shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
       }
     }
 
@@ -62,6 +66,80 @@
       overflow-x: hidden;
     }
 
+    /* =========================================================
+       FONDO ANIMADO CON DEGRADADOS ESTILO GEMINI
+       ========================================================= */
+    .gemini-ambient-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+      background: var(--bg);
+    }
+
+    .gemini-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(85px);
+      opacity: var(--orb-opacity);
+      will-change: transform;
+    }
+
+    .orb-1 {
+      width: 480px;
+      height: 480px;
+      background: radial-gradient(circle, #4285F4 0%, transparent 70%);
+      top: -130px;
+      left: -110px;
+      animation: orbFloat1 15s ease-in-out infinite alternate;
+    }
+
+    .orb-2 {
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, #9B72CB 0%, transparent 70%);
+      top: 12%;
+      right: -140px;
+      animation: orbFloat2 19s ease-in-out infinite alternate;
+    }
+
+    .orb-3 {
+      width: 440px;
+      height: 440px;
+      background: radial-gradient(circle, #D96570 0%, transparent 70%);
+      bottom: -110px;
+      left: 5%;
+      animation: orbFloat3 17s ease-in-out infinite alternate;
+    }
+
+    .orb-4 {
+      width: 390px;
+      height: 390px;
+      background: radial-gradient(circle, #38BDF8 0%, transparent 70%);
+      bottom: 18%;
+      right: 10%;
+      animation: orbFloat2 21s ease-in-out infinite alternate-reverse;
+    }
+
+    @keyframes orbFloat1 {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(65px, 45px) scale(1.12); }
+      100% { transform: translate(25px, 95px) scale(0.95); }
+    }
+
+    @keyframes orbFloat2 {
+      0% { transform: translate(0, 0) scale(1.05); }
+      50% { transform: translate(-70px, 55px) scale(0.92); }
+      100% { transform: translate(-35px, -60px) scale(1.14); }
+    }
+
+    @keyframes orbFloat3 {
+      0% { transform: translate(0, 0) scale(0.96); }
+      50% { transform: translate(80px, -50px) scale(1.15); }
+      100% { transform: translate(40px, -20px) scale(1.02); }
+    }
+
     /* Barra superior fija con blur estilo One UI al hacer scroll */
     .sticky-nav {
       position: fixed;
@@ -74,9 +152,9 @@
       align-items: center;
       justify-content: space-between;
       background: var(--glass);
-      backdrop-filter: blur(24px) saturate(185%);
-      -webkit-backdrop-filter: blur(24px) saturate(185%);
-      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(26px) saturate(190%);
+      -webkit-backdrop-filter: blur(26px) saturate(190%);
+      border-bottom: 1px solid var(--border);
       z-index: 30;
       opacity: 0;
       pointer-events: none;
@@ -101,6 +179,8 @@
       max-width: 680px;
       margin: 0 auto;
       padding: 0 16px 56px;
+      position: relative;
+      z-index: 1;
     }
 
     /* Cabecera expansiva estilo One UI (Viewing Area) */
@@ -138,8 +218,8 @@
       align-items: center;
       gap: 7px;
       background: var(--glass);
-      backdrop-filter: blur(18px) saturate(180%);
-      -webkit-backdrop-filter: blur(18px) saturate(180%);
+      backdrop-filter: blur(20px) saturate(185%);
+      -webkit-backdrop-filter: blur(20px) saturate(185%);
       border: 1px solid var(--glass-border);
       padding: 7px 14px;
       border-radius: 999px;
@@ -158,8 +238,8 @@
 
     .btn-pin {
       background: var(--glass);
-      backdrop-filter: blur(18px) saturate(180%);
-      -webkit-backdrop-filter: blur(18px) saturate(180%);
+      backdrop-filter: blur(20px) saturate(185%);
+      -webkit-backdrop-filter: blur(20px) saturate(185%);
       color: var(--text);
       border: 1px solid var(--glass-border);
       border-radius: 999px;
@@ -174,10 +254,12 @@
       transform: scale(0.94);
     }
 
-    /* Tarjetas One UI (Squircle 28px) */
+    /* Tarjetas One UI translúcidas con blur (Squircle 28px) */
     .panel {
       background: var(--card);
-      border: 1px solid var(--border);
+      backdrop-filter: blur(26px) saturate(185%);
+      -webkit-backdrop-filter: blur(26px) saturate(185%);
+      border: 1px solid var(--glass-border);
       border-radius: 28px;
       padding: 22px;
       margin-bottom: 26px;
@@ -195,17 +277,17 @@
 
     textarea {
       width: 100%;
-      min-height: 108px;
+      min-height: 112px;
       padding: 16px;
       border-radius: 20px;
       border: 1px solid var(--border);
-      background: var(--bg);
+      background: var(--input-bg);
       color: var(--text);
       font-family: inherit;
       font-size: 0.98rem;
       resize: vertical;
-      margin-bottom: 14px;
-      transition: border-color 0.25s, box-shadow 0.25s;
+      margin-bottom: 18px;
+      transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
     }
 
     textarea:focus {
@@ -214,34 +296,9 @@
       box-shadow: 0 0 0 4px var(--accent-soft);
     }
 
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 18px;
-    }
-
-    .chip {
-      background: var(--soft);
-      color: var(--text);
-      border: 1px solid transparent;
-      border-radius: 999px;
-      padding: 8px 14px;
-      font-size: 0.82rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: transform 0.22s var(--oneui-spring), background 0.2s;
-    }
-
-    .chip:active {
-      transform: scale(0.95);
-      background: var(--accent-soft);
-      color: var(--accent);
-    }
-
     .btn-primary {
       width: 100%;
-      background: var(--accent);
+      background: linear-gradient(135deg, #0381FE 0%, #3B82F6 55%, #6366F1 100%);
       color: #FFFFFF;
       border: none;
       border-radius: 999px;
@@ -254,13 +311,13 @@
       justify-content: center;
       align-items: center;
       gap: 8px;
-      box-shadow: 0 8px 20px rgba(3, 129, 254, 0.25);
-      transition: transform 0.25s var(--oneui-spring), background 0.2s, box-shadow 0.2s;
+      box-shadow: 0 8px 22px rgba(3, 129, 254, 0.28);
+      transition: transform 0.25s var(--oneui-spring), filter 0.2s, box-shadow 0.2s;
     }
 
     .btn-primary:active {
       transform: scale(0.965);
-      background: var(--accent-dark);
+      filter: brightness(0.94);
     }
 
     .btn-primary:disabled {
@@ -295,7 +352,10 @@
 
     .badge-offline {
       font-size: 0.76rem;
-      background: var(--accent-soft);
+      background: var(--glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
       color: var(--accent);
       padding: 4px 12px;
       border-radius: 999px;
@@ -311,7 +371,9 @@
 
     .juego-item {
       background: var(--card);
-      border: 1px solid var(--border);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid var(--glass-border);
       border-radius: 24px;
       padding: 16px 18px;
       display: flex;
@@ -442,7 +504,6 @@
       fill: #111827;
     }
 
-    /* Pulsos con colores de Gemini viajando de izquierda a derecha */
     .gemini-pulse {
       fill: none;
       stroke-width: 2.5;
@@ -478,7 +539,6 @@
       }
     }
 
-    /* Ondas en los nodos terminales izquierdo y derecho */
     .terminal-halo {
       fill: none;
       stroke-width: 2;
@@ -546,9 +606,9 @@
       align-items: center;
       padding: 10px 16px;
       background: var(--glass);
-      backdrop-filter: blur(24px) saturate(185%);
-      -webkit-backdrop-filter: blur(24px) saturate(185%);
-      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(26px) saturate(190%);
+      -webkit-backdrop-filter: blur(26px) saturate(190%);
+      border-bottom: 1px solid var(--border);
       gap: 8px;
     }
 
@@ -578,9 +638,9 @@
       display: none;
       padding: 12px 16px;
       background: var(--glass);
-      backdrop-filter: blur(24px) saturate(185%);
-      -webkit-backdrop-filter: blur(24px) saturate(185%);
-      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(26px) saturate(190%);
+      -webkit-backdrop-filter: blur(26px) saturate(190%);
+      border-bottom: 1px solid var(--border);
       gap: 8px;
     }
 
@@ -589,7 +649,7 @@
       padding: 11px 16px;
       border-radius: 999px;
       border: 1px solid var(--border);
-      background: var(--card);
+      background: var(--input-bg);
       color: var(--text);
       font-size: 0.9rem;
     }
@@ -617,8 +677,8 @@
       position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.42);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       align-items: center;
       justify-content: center;
       padding: 20px;
@@ -627,8 +687,8 @@
 
     .modal-caja {
       background: var(--glass);
-      backdrop-filter: blur(28px) saturate(190%);
-      -webkit-backdrop-filter: blur(28px) saturate(190%);
+      backdrop-filter: blur(30px) saturate(195%);
+      -webkit-backdrop-filter: blur(30px) saturate(195%);
       border: 1px solid var(--glass-border);
       border-radius: 30px;
       padding: 26px 24px;
@@ -659,7 +719,7 @@
       letter-spacing: 0.35em;
       border-radius: 18px;
       border: 1px solid var(--border);
-      background: var(--card);
+      background: var(--input-bg);
       color: var(--text);
       margin-bottom: 16px;
     }
@@ -687,6 +747,14 @@
 </head>
 <body>
 
+  <!-- Fondo ambiental animado con colores de Gemini -->
+  <div class="gemini-ambient-bg" aria-hidden="true">
+    <div class="gemini-orb orb-1"></div>
+    <div class="gemini-orb orb-2"></div>
+    <div class="gemini-orb orb-3"></div>
+    <div class="gemini-orb orb-4"></div>
+  </div>
+
   <!-- Barra fija superior One UI con efecto blur -->
   <nav class="sticky-nav" id="sticky-nav">
     <span class="sticky-title">Fábrica de Juegos</span>
@@ -705,8 +773,7 @@
 
     <section class="panel">
       <label for="prompt-input">¿Qué juego quieres crear hoy?</label>
-      <textarea id="prompt-input" placeholder="Ej: Juego de parejas de trenes de colores con 6 cartas grandes y refuerzo positivo..."></textarea>
-    
+      <textarea id="prompt-input" placeholder="Describe aquí el juego educativo que quieres crear hoy..."></textarea>
 
       <button class="btn-primary" id="btn-crear" onclick="generarJuego(false)">✨ Crear juego</button>
       <div class="estado" id="estado"></div>
@@ -744,30 +811,22 @@
 
         <!-- CAPA BASE: LÍNEAS NEGRAS GEOMÉTRICAS (SIMETRÍA HORIZONTAL) -->
         <g>
-          <!-- Eje central -->
           <path id="path-center" class="base-line" d="M 48 190 L 852 190" />
-
-          <!-- Contorno exterior de diamante -->
           <path id="path-outer-top" class="base-line" d="M 48 190 C 125 190, 165 110, 225 65 L 320 26 L 580 26 L 675 65 C 735 110, 775 190, 852 190" />
           <path id="path-outer-bot" class="base-line" d="M 48 190 C 125 190, 165 270, 225 315 L 320 354 L 580 354 L 675 315 C 735 270, 775 190, 852 190" />
-
-          <!-- Segundo nivel de diamante -->
           <path id="path-mid-top" class="base-line" d="M 48 190 C 120 190, 160 135, 245 95 L 360 52 L 540 52 L 655 95 C 740 135, 780 190, 852 190" />
           <path id="path-mid-bot" class="base-line" d="M 48 190 C 120 190, 160 245, 245 285 L 360 328 L 540 328 L 655 285 C 740 245, 780 190, 852 190" />
 
-          <!-- Pistas paralelas internas (efecto circuito) -->
           <path id="path-track-1" class="base-line" d="M 48 190 C 130 190, 175 148, 260 128 L 410 128 C 435 128, 442 145, 450 145 C 458 145, 465 128, 490 128 L 640 128 C 725 148, 770 190, 852 190" />
           <path id="path-track-2" class="base-line" d="M 48 190 C 135 190, 185 162, 275 152 L 405 152 C 430 152, 440 166, 450 166 C 460 166, 470 152, 495 152 L 625 152 C 715 162, 765 190, 852 190" />
           <path id="path-track-3" class="base-line" d="M 48 190 C 135 190, 185 218, 275 228 L 405 228 C 430 228, 440 214, 450 214 C 460 214, 470 228, 495 228 L 625 228 C 715 218, 765 190, 852 190" />
           <path id="path-track-4" class="base-line" d="M 48 190 C 130 190, 175 232, 260 252 L 410 252 C 435 252, 442 235, 450 235 C 458 235, 465 252, 490 252 L 640 252 C 725 232, 770 190, 852 190" />
 
-          <!-- Pistas intermedias adicionales -->
           <path class="base-line" d="M 48 190 C 125 190, 170 142, 250 112 L 650 112 C 730 142, 775 190, 852 190" />
           <path class="base-line" d="M 48 190 C 125 190, 170 238, 250 268 L 650 268 C 730 238, 775 190, 852 190" />
           <path class="base-line" d="M 48 190 C 140 190, 195 174, 290 174 L 610 174 C 705 174, 760 190, 852 190" />
           <path class="base-line" d="M 48 190 C 140 190, 195 206, 290 206 L 610 206 C 705 206, 760 190, 852 190" />
 
-          <!-- Entramado romboidal cruzado (45 grados) -->
           <path id="path-cross-1" class="base-line" d="M 48 190 C 135 190, 180 140, 265 95 L 360 190 L 450 100 L 540 190 L 635 95 C 720 140, 765 190, 852 190" />
           <path id="path-cross-2" class="base-line" d="M 48 190 C 135 190, 180 240, 265 285 L 360 190 L 450 280 L 540 190 L 635 285 C 720 240, 765 190, 852 190" />
           <path class="base-line" d="M 225 65 L 350 190 L 225 315" />
@@ -793,7 +852,6 @@
 
         <!-- CAPA DE NODOS E INTERSECCIONES -->
         <g>
-          <!-- Puntos sólidos pequeños en intersecciones -->
           <circle class="base-dot" cx="225" cy="65" r="2.8" />
           <circle class="base-dot" cx="225" cy="315" r="2.8" />
           <circle class="base-dot" cx="320" cy="26" r="2.8" />
@@ -810,7 +868,6 @@
           <circle class="base-dot" cx="450" cy="280" r="3" />
           <circle class="base-dot" cx="450" cy="190" r="3.2" />
 
-          <!-- Nodos con doble anillo (como en la imagen de referencia) -->
           <g transform="translate(265, 95)">
             <circle class="target-node-outer" r="6.5" />
             <circle class="target-node-inner" r="2.5" />
@@ -844,14 +901,12 @@
             <circle class="target-node-inner" r="2.3" />
           </g>
 
-          <!-- Nodo terminal IZQUIERDO (Origen) -->
           <g transform="translate(48, 190)">
             <circle class="terminal-halo halo-left" r="11" />
             <circle class="target-node-outer" r="10" />
             <circle class="target-node-inner" r="4.5" />
           </g>
 
-          <!-- Nodo terminal DERECHO (Destino) -->
           <g transform="translate(852, 190)">
             <circle class="terminal-halo halo-right" r="11" />
             <circle class="target-node-outer" r="10" />
@@ -928,7 +983,7 @@
           ]
         : [
             "Diseñando estructura del juego...",
-            "Dibujando ilustraciones vectoriales limpias...",
+            "Dibujando ilustraciones vectoriales por capas...",
             "Ajustando refuerzo positivo y controles táctiles..."
           ];
 
@@ -941,7 +996,7 @@
       intervaloMensajes = setInterval(() => {
         idx = (idx + 1) % mensajes.length;
         sub.textContent = mensajes[idx];
-      }, 3200);
+      }, 3500);
     }
 
     function ocultarPantallaCarga() {
@@ -964,10 +1019,6 @@
         localStorage.setItem(PIN_KEY, val);
         document.getElementById('modal-pin').style.display = 'none';
       }
-    }
-
-    function usarIdea(texto) {
-      document.getElementById('prompt-input').value = texto;
     }
 
     function obtenerGuardados() {
