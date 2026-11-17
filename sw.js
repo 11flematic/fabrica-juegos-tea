@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fabrica-juegos-v1';
+const CACHE_NAME = 'fabrica-juegos-v2';
 const ASSETS = ['./', './index.html', './manifest.json', './icon.svg'];
 
 self.addEventListener('install', (e) => {
